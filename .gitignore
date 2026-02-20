@@ -1,2 +1,9 @@
+# Build artifacts
 bin/
 obj/
+
+# Proprietary dependencies - DO NOT DISTRIBUTE
+*.dll
+oneocr.dll
+oneocr.onemodel
+onnxruntime.dll
