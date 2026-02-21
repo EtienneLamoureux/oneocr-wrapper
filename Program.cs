@@ -132,7 +132,7 @@ class Program
     {
         if (args.Length < 1)
         {
-            Console.WriteLine("Usage: OneOcrDemo.exe <image.png|bmp|jpg>");
+            Console.WriteLine("Usage: PhotosScanTextWrapper.exe <image.png|bmp|jpg>");
             return;
         }
 
