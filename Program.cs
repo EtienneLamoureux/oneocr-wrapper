@@ -19,13 +19,16 @@ struct Img
     public long data_ptr;
 }
 
-[StructLayout(LayoutKind.Sequential, Pack = 1)]
 struct OcrBoundingBox
 {
-    public int left;
-    public int top;
-    public int right;
-    public int bottom;
+    public float X1;
+    public float Y1;
+    public float X2;
+    public float Y2;
+    public float X3;
+    public float Y3;
+    public float X4;
+    public float Y4;
 }
 
 #endregion
@@ -69,7 +72,7 @@ static class OneOcr
     public static extern long GetOcrLineContent(IntPtr line, out IntPtr textPtr);
 
     [DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
-    public static extern long GetOcrLineBoundingBox(IntPtr line, out OcrBoundingBox box);
+    public static extern long GetOcrLineBoundingBox(IntPtr line, out IntPtr boxPtr);
 
     [DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
     public static extern long GetOcrLineWordCount(IntPtr line, out long count);
@@ -81,7 +84,7 @@ static class OneOcr
     public static extern long GetOcrWordContent(IntPtr word, out IntPtr textPtr);
 
     [DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
-    public static extern long GetOcrWordBoundingBox(IntPtr word, out OcrBoundingBox box);
+    public static extern long GetOcrWordBoundingBox(IntPtr word, out IntPtr boxPtr);
 }
 
 #endregion
@@ -90,14 +93,22 @@ static class OneOcr
 
 class BoundingBox
 {
-    [JsonPropertyName("left")]
-    public int Left { get; set; }
-    [JsonPropertyName("top")]
-    public int Top { get; set; }
-    [JsonPropertyName("right")]
-    public int Right { get; set; }
-    [JsonPropertyName("bottom")]
-    public int Bottom { get; set; }
+    [JsonPropertyName("x1")]
+    public float X1 { get; set; }
+    [JsonPropertyName("y1")]
+    public float Y1 { get; set; }
+    [JsonPropertyName("x2")]
+    public float X2 { get; set; }
+    [JsonPropertyName("y2")]
+    public float Y2 { get; set; }
+    [JsonPropertyName("x3")]
+    public float X3 { get; set; }
+    [JsonPropertyName("y3")]
+    public float Y3 { get; set; }
+    [JsonPropertyName("x4")]
+    public float X4 { get; set; }
+    [JsonPropertyName("y4")]
+    public float Y4 { get; set; }
 }
 
 class OcrWordDto
@@ -256,12 +267,17 @@ class Program
             OneOcr.GetOcrLineContent(line, out IntPtr textPtr);
             string text = Marshal.PtrToStringAnsi(textPtr);
 
-            OneOcr.GetOcrLineBoundingBox(line, out OcrBoundingBox box);
+            OneOcr.GetOcrLineBoundingBox(line, out IntPtr boxPtr);
+            OcrBoundingBox box = Marshal.PtrToStructure<OcrBoundingBox>(boxPtr);
 
             var lineDto = new OcrLineDto
             {
                 Text = text,
-                BoundingBox = new BoundingBox { Left = box.left, Top = box.top, Right = box.right, Bottom = box.bottom }
+                BoundingBox = new BoundingBox
+                {
+                    X1 = box.X1, Y1 = box.Y1, X2 = box.X2, Y2 = box.Y2,
+                    X3 = box.X3, Y3 = box.Y3, X4 = box.X4, Y4 = box.Y4
+                }
             };
 
             OneOcr.GetOcrLineWordCount(line, out long wc);
@@ -269,14 +285,19 @@ class Program
             {
                 OneOcr.GetOcrWord(line, j, out IntPtr word);
                 OneOcr.GetOcrWordContent(word, out IntPtr wptr);
-                OneOcr.GetOcrWordBoundingBox(word, out OcrBoundingBox wbox);
+                OneOcr.GetOcrWordBoundingBox(word, out IntPtr wboxPtr);
+                OcrBoundingBox wbox = Marshal.PtrToStructure<OcrBoundingBox>(wboxPtr);
 
                 string wtext = Marshal.PtrToStringAnsi(wptr);
-                
+
                 lineDto.Words.Add(new OcrWordDto
                 {
                     Text = wtext,
-                    BoundingBox = new BoundingBox { Left = wbox.left, Top = wbox.top, Right = wbox.right, Bottom = wbox.bottom }
+                    BoundingBox = new BoundingBox
+                    {
+                        X1 = wbox.X1, Y1 = wbox.Y1, X2 = wbox.X2, Y2 = wbox.Y2,
+                        X3 = wbox.X3, Y3 = wbox.Y3, X4 = wbox.X4, Y4 = wbox.Y4
+                    }
                 });
             }
 
