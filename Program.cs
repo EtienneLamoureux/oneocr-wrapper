@@ -132,9 +132,11 @@ class Program
     {
         if (args.Length < 1)
         {
-            Console.WriteLine("Usage: PhotosScanTextWrapper.exe <image.png|bmp|jpg>");
+            Console.WriteLine("Usage: PhotosScanTextWrapper.exe <image.png|bmp|jpg> [--pretty-print]");
             return;
         }
+
+        bool prettyPrint = args.Length > 1 && args[1] == "--pretty-print";
 
         using Bitmap bmp = new Bitmap(args[0]);
         using Bitmap bgra = bmp.Clone(new Rectangle(0, 0, bmp.Width, bmp.Height), PixelFormat.Format32bppArgb);
@@ -160,7 +162,7 @@ class Program
             };
 
             var result = RunOcr(img);
-            OutputJson(result);
+            OutputJson(result, prettyPrint);
         }
         catch (Exception ex)
         {
@@ -181,9 +183,9 @@ class Program
         return result;
     }
 
-    static void OutputJson(OcrResultDto resultDto)
+    static void OutputJson(OcrResultDto resultDto, bool prettyPrint)
     {
-        string jsonOutput = JsonSerializer.Serialize(resultDto, new JsonSerializerOptions { WriteIndented = true });
+        string jsonOutput = JsonSerializer.Serialize(resultDto, new JsonSerializerOptions { WriteIndented = prettyPrint });
         Console.WriteLine(jsonOutput);
     }
 
