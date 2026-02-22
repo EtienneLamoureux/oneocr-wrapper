@@ -11,12 +11,12 @@ using System.Text.Json.Serialization;
 [StructLayout(LayoutKind.Sequential, Pack = 1)]
 struct Img
 {
-    public int t;
-    public int col;
-    public int row;
-    public int unk;
-    public long step;
-    public long data_ptr;
+    public int T;
+    public int Col;
+    public int Row;
+    public int Unk;
+    public long Step;
+    public long DataPtr;
 }
 
 struct OcrBoundingBox
@@ -164,12 +164,12 @@ class Program
         {
             Img img = new Img
             {
-                t = 3,
-                col = width,
-                row = height,
-                unk = 0,
-                step = bmpData.Stride,
-                data_ptr = bmpData.Scan0.ToInt64()
+                T = 3,
+                Col = width,
+                Row = height,
+                Unk = 0,
+                Step = bmpData.Stride,
+                DataPtr = bmpData.Scan0.ToInt64()
             };
 
             var result = RunOcr(img);
@@ -230,8 +230,6 @@ class Program
             res = OneOcr.CreateOcrPipeline(modelPtr, keyPtr, ctx, out pipeline);
             if (res != 0) throw new Exception($"CreateOcrPipeline failed: {res}");
 
-            Console.Error.WriteLine("OCR model loaded...");
-
             res = OneOcr.CreateOcrProcessOptions(out opt);
             if (res != 0) throw new Exception($"CreateOcrProcessOptions failed: {res}");
 
@@ -247,10 +245,7 @@ class Program
             keyHandle.Free();
         }
 
-        Console.Error.WriteLine("Running ocr pipeline...");
-
         OneOcr.GetOcrLineCount(instance, out long lines);
-        Console.Error.WriteLine($"Recognize {lines} lines");
 
         return CreateOcrResultDto(instance, lines);
     }
