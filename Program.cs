@@ -93,22 +93,22 @@ static class OneOcr
 
 class BoundingBox
 {
-    [JsonPropertyName("x1")]
-    public float X1 { get; set; }
-    [JsonPropertyName("y1")]
-    public float Y1 { get; set; }
-    [JsonPropertyName("x2")]
-    public float X2 { get; set; }
-    [JsonPropertyName("y2")]
-    public float Y2 { get; set; }
-    [JsonPropertyName("x3")]
-    public float X3 { get; set; }
-    [JsonPropertyName("y3")]
-    public float Y3 { get; set; }
-    [JsonPropertyName("x4")]
-    public float X4 { get; set; }
-    [JsonPropertyName("y4")]
-    public float Y4 { get; set; }
+    public BoundingBox(OcrBoundingBox box)
+    {
+        X = box.X1;
+        Y = box.Y1;
+        Width = box.X3 - X;
+        Height = box.Y3 - Y;
+    }
+
+    [JsonPropertyName("x")]
+    public float X { get; }
+    [JsonPropertyName("y")]
+    public float Y { get; }
+    [JsonPropertyName("width")]
+    public float Width { get; }
+    [JsonPropertyName("height")]
+    public float Height { get; }
 }
 
 class OcrWordDto
@@ -273,11 +273,7 @@ class Program
             var lineDto = new OcrLineDto
             {
                 Text = text,
-                BoundingBox = new BoundingBox
-                {
-                    X1 = box.X1, Y1 = box.Y1, X2 = box.X2, Y2 = box.Y2,
-                    X3 = box.X3, Y3 = box.Y3, X4 = box.X4, Y4 = box.Y4
-                }
+                BoundingBox = new BoundingBox(box)
             };
 
             OneOcr.GetOcrLineWordCount(line, out long wc);
@@ -293,11 +289,7 @@ class Program
                 lineDto.Words.Add(new OcrWordDto
                 {
                     Text = wtext,
-                    BoundingBox = new BoundingBox
-                    {
-                        X1 = wbox.X1, Y1 = wbox.Y1, X2 = wbox.X2, Y2 = wbox.Y2,
-                        X3 = wbox.X3, Y3 = wbox.Y3, X4 = wbox.X4, Y4 = wbox.Y4
-                    }
+                    BoundingBox = new BoundingBox(wbox)
                 });
             }
 
