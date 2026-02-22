@@ -23,6 +23,11 @@ These dependencies must be placed at the root of the project for it to build. On
 N.B.: The program was only tested with DLLs from `SnippingTool 11.2409.25.0`
 
 ### Build
+1. Fork and clone this repository
+1. Download and install [Visual Studio Code](https://code.visualstudio.com/)
+   1. Install the [C# Dev Kit](https://marketplace.visualstudio.com/items?itemName=ms-dotnettools.csdevkit) extension
+1. In a terminal, run the following command: 
+
 ```cmd
 dotnet build -c Release
 ```
