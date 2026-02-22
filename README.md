@@ -1,5 +1,5 @@
-# Photos "Scan text" wrapper
-This project is a C# port of https://github.com/b1tg/win11-oneocr. It wraps [Microsoft Photos' powerful OneOCR feature](https://learn.microsoft.com/en-us/answers/questions/2285914/how-to-extract-text-from-images-on-windows-11-arti) (the "Scan text" button) in a small executable, the output of which can then be programatically consumed.
+# OneOCR wrapper
+This project is a C# port of https://github.com/b1tg/win11-oneocr. It wraps [Microsoft Photos' powerful OneOCR feature](https://learn.microsoft.com/en-us/answers/questions/2285914/how-to-extract-text-from-images-on-windows-11-arti) (the "Scan text" button) in a small executable and outputs the extracted text as structured JSON.
 
 For more information, you can consult the [original author's blog post](https://b1tg.github.io/post/win11-oneocr/).
 
